@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Match.GroupManagement.Business.Impl.Services;
+using Match.GroupManagement.Business.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +18,8 @@ namespace Match.GroupeManagement.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBusiness();
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,6 +30,18 @@ namespace Match.GroupeManagement.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+               {
+                   context.Response.Headers.Add("X-Powered-By", "Outmane");
+                   return Task.CompletedTask;
+               });
+                await next.Invoke();
+            });
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -34,6 +50,7 @@ namespace Match.GroupeManagement.Web
                 {
                     await context.Response.WriteAsync("Hello World!");
                 });
+                endpoints.MapControllers();
             });
         }
     }

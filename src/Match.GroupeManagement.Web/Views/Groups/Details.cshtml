@@ -1,0 +1,7 @@
+﻿@model GroupViewModel
+
+<form asp-action="Edit" asp-controller="Groups" asp-route-id="@Model.Id" method="post">
+    <label asp-for="Name">Name:</label>
+    <input asp-for="Name" value="@Model.Name"/>
+    <button type="submit">Save</button>
+</form>
